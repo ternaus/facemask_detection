@@ -1,0 +1,109 @@
+---
+seed: 1984
+data_path: /home/vladimir/workspace/data3/face_masks/images
+sync_bn: True
+num_workers: 12
+experiment_name: "2020-07-29"
+
+model:
+  type: timm.create_model
+  model_name: tf_efficientnet_b0_ns
+  num_classes: 1
+  pretrained: True
+
+trainer:
+  type: pytorch_lightning.Trainer
+  early_stop_callback: False
+  gpus: 4
+  amp_level: O1
+  max_epochs: 310
+  distributed_backend: ddp
+  progress_bar_refresh_rate: 1
+  benchmark: True
+  precision: 16
+
+scheduler:
+  type: torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+  T_0: 10
+  T_mult: 2
+
+train_parameters:
+  batch_size: 96
+
+checkpoint_callback:
+  type: pytorch_lightning.callbacks.ModelCheckpoint
+  filepath: "2020-07-29"
+  monitor: val_loss
+  verbose: True
+  mode: min
+  save_top_k: -1
+
+val_parameters:
+  batch_size: 96
+
+optimizer:
+  type: torch.optim.SGD
+  lr: 0.01
+  weight_decay: 0.0001
+
+loss:
+  type: torch.nn.BCEWithLogitsLoss
+
+train_aug:
+  transform:
+    __class_fullname__: albumentations.core.composition.Compose
+    bbox_params: null
+    keypoint_params: null
+    p: 1
+    transforms:
+      - __class_fullname__: albumentations.augmentations.transforms.RandomResizedCrop
+        height: 224
+        width: 224
+        always_apply: false
+        p: 1
+      - __class_fullname__: albumentations.augmentations.transforms.HorizontalFlip
+        always_apply: false
+        p: 0.5
+      - __class_fullname__: albumentations.augmentations.transforms.Normalize
+        always_apply: false
+        max_pixel_value: 255.0
+        p: 1
+
+
+val_aug:
+  transform:
+    __class_fullname__: albumentations.core.composition.Compose
+    bbox_params: null
+    keypoint_params: null
+    p: 1
+    transforms:
+      - __class_fullname__: albumentations.augmentations.transforms.CenterCrop
+        height: 224
+        width: 224
+        always_apply: false
+        p: 1
+      - __class_fullname__: albumentations.augmentations.transforms.Normalize
+        always_apply: false
+        max_pixel_value: 255.0
+        p: 1
+
+test_aug:
+  transform:
+    __class_fullname__: albumentations.core.composition.Compose
+    bbox_params: null
+    keypoint_params: null
+    p: 1
+    transforms:
+      - __class_fullname__: albumentations.augmentations.transforms.SmallestMaxSize
+        max_size: 256
+        always_apply: false
+        p: 1
+      - __class_fullname__: albumentations.augmentations.transforms.CenterCrop
+        height: 224
+        width: 224
+        always_apply: false
+        p: 1
+      - __class_fullname__: albumentations.augmentations.transforms.Normalize
+        always_apply: false
+        max_pixel_value: 255.0
+        p: 1
