@@ -41,13 +41,7 @@ def main():
     with open(args.config_path) as f:
         hparams = yaml.load(f, Loader=yaml.SafeLoader)
 
-    hparams.update(
-        {
-            "json_path": args.output_path,
-            "local_rank": args.local_rank,
-            "fp16": args.fp16
-        }
-    )
+    hparams.update({"json_path": args.output_path, "local_rank": args.local_rank, "fp16": args.fp16})
 
     device = torch.device("cuda", args.local_rank)
 
@@ -68,7 +62,7 @@ def main():
     file_paths = []
 
     for regexp in ["*.jpg", "*.png", "*.jpeg", "*.JPG"]:
-        file_paths += sorted([x for x in tqdm(args.input_path.rglob(regexp))])
+        file_paths += sorted(x for x in tqdm(args.input_path.rglob(regexp)))
 
     dataset = FaceMaskTestDataset(file_paths, transform=from_dict(hparams["test_aug"]))
 
@@ -91,10 +85,9 @@ def main():
 
     if dist.get_rank() == 0:
         with torch.no_grad():
-            predictions = torch.cat(prediction_list, dim=1).reshape(-1).cpu().numpy()[:len(dataset)]
+            predictions = torch.cat(prediction_list, dim=1).reshape(-1).cpu().numpy()[: len(dataset)]
 
-        df = pd.DataFrame({"file_path": file_paths,
-                           "predictions": predictions})
+        df = pd.DataFrame({"file_path": file_paths, "predictions": predictions})
 
         df.to_csv(args.output_path, index=False)
 

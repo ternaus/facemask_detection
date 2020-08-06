@@ -1,6 +1,7 @@
 import argparse
+from collections import OrderedDict
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
 
 import apex
 import numpy as np
@@ -14,7 +15,6 @@ from pytorch_lightning.logging import WandbLogger
 from torch.utils.data import DataLoader
 
 from facemask_detection.dataloader import FaceMaskDataset
-from collections import OrderedDict
 
 
 def get_args():
@@ -40,18 +40,22 @@ class FaceMask(pl.LightningModule):
     def forward(self, batch: Dict) -> torch.Tensor:
         return self.model(batch)
 
-    def setup(self, stage: int = 0):
-        positive_samples = []
-        negative_samples = []
+    def setup(self, stage: int = 0) -> None:
+        positive_samples: List[Tuple[Path, int]] = []
+        negative_samples: List[Tuple[Path, int]] = []
 
-        for file_name in sorted((Path(self.hparams['data_path']) / "masks").glob("*.jpg")):
+        for file_name in sorted((Path(self.hparams["data_path"]) / "masks").glob("*.jpg")):
             positive_samples += [(file_name, 1)]
 
-        for file_name in sorted((Path(self.hparams['data_path']) / "non-masks").glob("*.jpg")):
+        for file_name in sorted((Path(self.hparams["data_path"]) / "non-masks").glob("*.jpg")):
             negative_samples += [(file_name, 0)]
 
-        self.train_samples = positive_samples[:int(0.8 * len(positive_samples))] + negative_samples[:int(0.8 * len(negative_samples))]
-        self.val_samples = positive_samples[int(0.8 * len(positive_samples)):] + negative_samples[int(0.8 * len(negative_samples)):]
+        self.train_samples = (
+            positive_samples[: int(0.8 * len(positive_samples))] + negative_samples[: int(0.8 * len(negative_samples))]
+        )
+        self.val_samples = (
+            positive_samples[int(0.8 * len(positive_samples)) :] + negative_samples[int(0.8 * len(negative_samples)) :]
+        )
 
     def train_dataloader(self):
         train_aug = from_dict(self.hparams["train_aug"])
@@ -95,11 +99,7 @@ class FaceMask(pl.LightningModule):
 
         tqdm_dict = {"train_loss": total_loss, "lr": self._get_current_lr()}
 
-        return OrderedDict({
-            "loss": total_loss,
-            'progress_bar': tqdm_dict,
-            'log': tqdm_dict
-        })
+        return OrderedDict({"loss": total_loss, "progress_bar": tqdm_dict, "log": tqdm_dict})
 
     def _get_current_lr(self) -> torch.Tensor:
         lr = [x["lr"] for x in self.optimizers[0].param_groups][0]
@@ -109,11 +109,7 @@ class FaceMask(pl.LightningModule):
         targets = batch["target"]
         logits = self.forward(batch["image"])
 
-        return OrderedDict({
-            'val_loss': self.loss(logits, targets),
-            "logits": logits,
-            "targets": targets
-        })
+        return OrderedDict({"val_loss": self.loss(logits, targets), "logits": logits, "targets": targets})
 
     def validation_epoch_end(self, outputs: List) -> Dict[str, Any]:
         result_probs: List[float] = []

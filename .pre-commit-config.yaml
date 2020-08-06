@@ -24,8 +24,11 @@ repos:
     - id: debug-statements
     - id: end-of-file-fixer
     - id: trailing-whitespace
-    - id: flake8
     - id: requirements-txt-fixer
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.3
+    hooks:
+    - id: flake8
 - repo: https://github.com/asottile/pyupgrade
   rev: v1.13.0
   hooks:
