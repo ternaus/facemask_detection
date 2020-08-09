@@ -6,7 +6,7 @@ import re
 from setuptools import Command, find_packages, setup
 
 # Package meta-data.
-name = "facemask_detections"
+name = "facemask_detection"
 description = "Unstructured set of the helper functions."
 url = "https://github.com/ternaus/facemask_detection"
 email = "iglovikov@gmail.com"
