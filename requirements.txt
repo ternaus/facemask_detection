@@ -1,5 +1,2 @@
 albumentations
-iglovikov_helper_functions
-pytorch_lightning
-pytorch_toolbelt
 timm
