@@ -1,8 +1,10 @@
 import io
 import os
+import re
 import sys
 from shutil import rmtree
-import re
+from typing import Tuple, List
+
 from setuptools import Command, find_packages, setup
 
 # Package meta-data.
@@ -53,7 +55,7 @@ class UploadCommand(Command):
     """Support setup.py upload."""
 
     description = "Build and publish the package."
-    # user_options = []
+    user_options: List[Tuple] = []
 
     @staticmethod
     def status(s):
