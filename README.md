@@ -11,6 +11,9 @@ https://github.com/ternaus/retinaface.
 
 ![https://habrastorage.org/webt/b_/ja/ww/b_jawwxndpkdl2pjlxlcxvars6m.png](https://habrastorage.org/webt/b_/ja/ww/b_jawwxndpkdl2pjlxlcxvars6m.png)
 
+# Installation
+`pip install -U facemask_detection`
+
 # Use
 ```python
 import albumentations as A
