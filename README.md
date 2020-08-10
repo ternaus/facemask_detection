@@ -1,5 +1,15 @@
 # Facemask detection
-Detection of the masks on the faces.
+
+It could be confusing, but the model in this library perform classifications of the images.
+It takes image as an input and outputs probability of person in the image wearing a mask.
+
+Hence in order to get expected results the model should be combined with face detector, for example from
+https://github.com/ternaus/retinaface.
+
+[Example on how to combine face detector with mask detector](https://colab.research.google.com/drive/13Ktsrx164eQHfDmYLyMCoI-Kq0gC5Kg1?usp=sharing)
+
+
+![https://habrastorage.org/webt/b_/ja/ww/b_jawwxndpkdl2pjlxlcxvars6m.png](https://habrastorage.org/webt/b_/ja/ww/b_jawwxndpkdl2pjlxlcxvars6m.png)
 
 # Use
 ```python
@@ -25,8 +35,8 @@ input = torch.from_numpy(np.transpose(transformed_image, (2, 0, 1))).unsqueeze(0
 print("Probability of the mask on the face = ", model(input)[0].item())
 ```
 
-Jupyter notebook with the example: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1VkSK5MKIuGPIA31KJpGiFe_FafYC4xfD?usp=sharing)
-
+* Jupyter notebook with the example: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1VkSK5MKIuGPIA31KJpGiFe_FafYC4xfD?usp=sharing)
+* Jupyter notebook with the example on how to combine face detector with mask detector: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13Ktsrx164eQHfDmYLyMCoI-Kq0gC5Kg1?usp=sharing)
 ## Train set
 
 Train dataset was composed from the data:
