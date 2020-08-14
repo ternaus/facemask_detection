@@ -8,6 +8,7 @@ https://github.com/ternaus/retinaface.
 
 [Example on how to combine face detector with mask detector](https://colab.research.google.com/drive/13Ktsrx164eQHfDmYLyMCoI-Kq0gC5Kg1?usp=sharing)
 
+[WebApp with face detector and mask classifier](https://facemaskd.herokuapp.com/)
 
 ![https://habrastorage.org/webt/b_/ja/ww/b_jawwxndpkdl2pjlxlcxvars6m.png](https://habrastorage.org/webt/b_/ja/ww/b_jawwxndpkdl2pjlxlcxvars6m.png)
 
@@ -104,3 +105,5 @@ python -m torch.distributed.launch --nproc_per_node=<num_gpu> facemask_detection
                                    -c <path to config>
                                    -b <batch size>
 ```
+
+Web https://facemaskd.herokuapp.com/

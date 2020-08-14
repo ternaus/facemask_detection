@@ -1,4 +1,5 @@
 from typing import List, Dict, Any
+
 import albumentations as A
 import cv2
 import numpy as np
@@ -51,7 +52,11 @@ mask_classifier = get_classifier("tf_efficientnet_b0_ns_2020-07-29")
 mask_classifier.eval()
 
 transform = A.Compose(
-    [A.SmallestMaxSize(max_size=256, p=1), A.CenterCrop(height=224, width=224, p=1), A.Normalize(p=1)]
+    [
+        A.SmallestMaxSize(max_size=256, p=1, interpolation=cv2.INTER_CUBIC),
+        A.CenterCrop(height=224, width=224, p=1),
+        A.Normalize(p=1),
+    ]
 )
 
 st.title("Detect face masks")
